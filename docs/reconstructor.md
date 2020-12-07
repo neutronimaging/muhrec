@@ -20,7 +20,8 @@ Creates a reconstructor object and binds a backprojector algorithm.
 
 #### Interface
 The reconstructor constuctor can be controlled using these parameters:
-|Input argument|Description|
+
+| Input argument | Description |
 |-|-|
 |eBackprojectors|Selects backprojector algorithm|
 
@@ -32,13 +33,15 @@ Configures the reconstructor object from a dictionary with parameters.
 
 #### Interface
 The configure method can be controlled by the arguments
+
 | Input argument | Description |
 |-|-|
 |args | A dictionary with arguments to control the reconstruction |
 
 #### List of arguments
 The argument dictionary has the following arguments:
-|Argument | Description | Data type|
+
+| Argument | Description | Data type |
 |-|-|-|
 |center| The position of the acquisition axis (center of rotation)| float |
 |tiltangle| Correction angle to adjust tilted acquisition axis (deg)| float |
@@ -56,12 +59,14 @@ Starts the reconstruction of a set of projections
 
 #### Interface
 The process method takes these arguments:
+
 |Input argument | Description |
 |-|-|
 |projections| a numpy array with the dimensions nProj x size V x size U.|
 |args | A dictionary with arguments to control the reconstruction |
 
 #### List of arguments
+
 |Argument | Description | Data type|
 |-|-|-|
 |angles| A list with acquisition angles in degrees. The number of angles must match the number of projections| float[nProj] |
