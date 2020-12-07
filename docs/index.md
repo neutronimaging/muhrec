@@ -3,4 +3,4 @@ MuhRec is a reconstruction tool for computed tomography. Originally, it was deve
 
 # Try MuhRec
 The easisest way to use MuhRec is to download a prebuilt release of the tool.
-<center><a href="https://github.com/neutronimaging/imagingsuite/releases"><img src='figures/muh4_download.svg' width="150"/></a></center>
+<a href="https://github.com/neutronimaging/imagingsuite/releases" style="text-align: center"><img src='figures/muh4_download.svg' width="150"/></a>
