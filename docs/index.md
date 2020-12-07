@@ -11,6 +11,9 @@ MuhRec can also be used from python which allows you to write scripts for the re
 
 ### Compile the python bindings
 
+### API documentation
+The python modules for muhrec are described [here](apidoc).
+
 ### A basic example
 This example requires that yo have compiled the python binding and also have the ```amglib```-module from [the python script repository](https://github.com/neutronimaging/scripts).
 ```
