@@ -26,10 +26,11 @@ Set the mid quantile fraction of center estimates to use for the linear fit of t
 ### ```estimate(img0deg,img180deg,esttype,bTilt)```
 #### Interface
 |Arguments| Description|
-|x0||
-|x180||
-|ImagingAlgorithms::TomoCenter::eEstimator est | |
-|bool bTilt| |
+|-|-|
+|2D Array x0| Image at 0 degrees|
+|2D Array x180| Image at 180 degress |
+|ImagingAlgorithms::TomoCenter::eEstimator est | Selects the estimator type for the fit|
+|bool bTilt| Selects if tilt should be fitted |
 
 #### Returns
 A tuple containing (center,tilt,pivot)
