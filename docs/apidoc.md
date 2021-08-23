@@ -4,4 +4,4 @@
 - [Reconstructor](reconstructor)
 
 ## Module ImagingAlgorithms
-These modules will be documented too.
+- [MorphSpotClean](MorphSpotClean)
