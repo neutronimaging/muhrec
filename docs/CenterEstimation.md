@@ -12,6 +12,8 @@ img180 = cproj[312,:,:] # This is the projection at the opposite side of the 0. 
 ce = imgalg.TomoCenter()
 
 cest = ce.estimate(img0,img180,imgalg.centerLeastSquare,True)
+
+print('Center: {0:0.2f}, Tilt angle: {1:0.02f}, Pivot point: {2:0.02f}'.format(cest[0],cest[1],cest[2]))
 ```
 
 ## Enums
