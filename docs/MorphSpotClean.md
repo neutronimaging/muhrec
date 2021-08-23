@@ -34,10 +34,11 @@ Creates a reconstructor object and binds a backprojector algorithm.
 MorphSpotClean constructor doesn't take any arguments.
 
 ### ```setConnectivity(conn)```
-
+Sets the mophological connectivity for thhe operations. Default value is 8-connectivity.
 #### Interface
-#### List of arguments
-kipl::morphology::MorphConnect conn = kipl::morphology::conn8
+|Argument| Description|
+|-|-|
+|conn| Sets the mophological connectivity (kipl::morphology::conn8)|
 
 
 ### ```setCleanMethod(detectionMethod,cleanMethod)```
@@ -67,6 +68,8 @@ Makes a check and replaces possible Inf and Nan values in the image before clean
 Sets the length of the median filter used to precondition the image boundaries.
 
 #### Interface
+|Argument| Description|
+|-|-|
 |length| Length of the edge smoothing filter|
 
 ### ```edgeConditionLength()```
@@ -75,95 +78,17 @@ Returns the lenght of the edge conditioning filter.
 ### ```detectionImage(x,remove_bias)```
 
 #### Interface
-|x|| 
-|remove_bias||
-
-### ```process(data,th,sigma)```
-
-#### Interface
-py::arg("data"),
-py::arg("th"),
-py::arg("sigma"));
-
+|Argument| Description|
+|-|-|
+|x|input image (2D only)| 
+|remove_bias| Switch to tell if the returned image is the full image with filled outliers of if the trend is subtracted|
 
 ### ```process(img,th,sigma)```
-Cleans spots from the image in place using th as threshold and sigma as mixing width.
+Cleans spots from the image in place using th as threshold and sigma as mixing width. The function shuld be able to take either double or single precision images and parameters
 
 #### Interface
-py::arg("data"),
-py::arg("th"),
-py::arg("sigma"));
-
-### ```process(img,th,sigma)```
-                 
-#### Interface                
-py::array_t<double> &x,
-double th,
-double sigma)
-    {
-        py::buffer_info buf1 = x.request();
-
-        if (buf1.ndim == 2)
-        {
-            std::vector<size_t> dims = {    static_cast<size_t>(buf1.shape[1]),
-                                            static_cast<size_t>(buf1.shape[0])};
-            double *data=static_cast<double*>(buf1.ptr);
-
-            kipl::base::TImage<float,2> img(dims);
-
-            std::copy_n(data,img.Size(),img.GetDataPtr());
-
-            msc.process(img,th,sigma);
-            std::copy_n(img.GetDataPtr(),img.Size(),data);
-        }
-        else if (buf1.ndim==3)
-        {
-            std::vector<size_t> dims = {    static_cast<size_t>(buf1.shape[2]),
-                                            static_cast<size_t>(buf1.shape[1]),
-                                            static_cast<size_t>(buf1.shape[0])};
-
-            double *data=static_cast<double*>(buf1.ptr);
-
-            kipl::base::TImage<float,3> img(dims);
-
-            std::copy_n(data,img.Size(),img.GetDataPtr());
-
-            msc.process(img,th,sigma);
-            std::copy_n(img.GetDataPtr(),img.Size(),data);
-        }
-        else
-            throw ImagingException("Morphspot clean only supports 2- and 3-D data",__FILE__,__LINE__);
-
-    },
-
-                "Cleans spots from the image in place using th as threshold and sigma as mixing width.",
-                py::arg("data"),
-                py::arg("th"),
-                py::arg("sigma"));
-
-
-    mscClass.def("process",
-                 [](ImagingAlgorithms::MorphSpotClean &msc,
-                 py::array_t<double> &x,
-                 std::vector<float> &th,
-                 std::vector<float> &sigma)
-    {
-        py::buffer_info buf1 = x.request();
-
-        std::vector<size_t> dims = {    static_cast<size_t>(buf1.shape[1]),
-                                        static_cast<size_t>(buf1.shape[0])};
-
-        double *data=static_cast<double*>(buf1.ptr);
-
-        kipl::base::TImage<float,2> img(dims);
-
-        std::copy_n(data,img.Size(),img.GetDataPtr());
-
-        msc.process(img,th,sigma);
-        std::copy_n(img.GetDataPtr(),img.Size(),data);
-    },
-
-                "Cleans spots from the image in place using th as threshold and sigma as mixing width.",
-                py::arg("data"),
-                py::arg("th"),
-                py::arg("sigma"));
+|Argument| Description|
+|-|-|
+|img| An 2D or 3D image. If a 3D image is provided, slices will be processed along axis=0|
+|th| vector containing the threshold values|
+|sigma| vector containing the width of the mixing band|
