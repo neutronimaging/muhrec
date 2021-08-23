@@ -1,18 +1,3 @@
-py::enum_<ImagingAlgorithms::eMorphCleanMethod>(m,"eMorphCleanMethod")
-        .value("MorphCleanReplace", ImagingAlgorithms::MorphCleanReplace)
-        .value("MorphCleanFill",    ImagingAlgorithms::MorphCleanFill)
-        .export_values();
-
-
-    py::enum_<ImagingAlgorithms::eMorphDetectionMethod>(m,"")
-            .value("MorphDetectDarkSpots",        ImagingAlgorithms::MorphDetectDarkSpots)
-            .value("MorphBrightSpots", ImagingAlgorithms::MorphDetectBrightSpots)
-            .value("MorphDetectAllSpots",         ImagingAlgorithms::MorphDetectAllSpots)
-            .value("MorphDetectHoles",            ImagingAlgorithms::MorphDetectHoles)
-            .value("MorphDetectPeaks",            ImagingAlgorithms::MorphDetectPeaks)
-            .value("MorphDetectBoth",             ImagingAlgorithms::MorphDetectBoth)
-            .export_values();
-
 # MorphSpotClean
 The reconstructor class creates a back-projector and allows you to configure the reconstruction.
 
@@ -33,61 +18,152 @@ The ```eMorphDetectionMethod``` enum is used to select the spot detection algori
 
 
 ### Correction method
-## The Reconstructor API
+The ```eCorrectionMethod``` enum is used to select how the outliers are corrected in the image.
+ 
+| enum value | Description |
+|-|-|
+|MorphCleanReplace| Standard method that uses the detection image value as replacement for the outlier (default value)|
+|MorphCleanFill| Experimental -  don't use|
 
-### ```Reconstructor(eBackprojectors)```
+## The MorphSpotClean API
+
+### ```MorphSpotClean()```
 Creates a reconstructor object and binds a backprojector algorithm.
 
 #### Interface
-The reconstructor constuctor can be controlled using these parameters:
+MorphSpotClean constructor doesn't take any arguments.
 
-| Input argument | Description |
-|-|-|
-|eBackprojectors|Selects backprojector algorithm|
-
-### ```name()```
-Returns the name of the backprojector algortihm.
-
-### ```configure(dict args)```
-Configures the reconstructor object from a dictionary with parameters.
+### ```setConnectivity(conn)```
 
 #### Interface
-The configure method can be controlled by the arguments
-
-| Input argument | Description |
-|-|-|
-|args | A dictionary with arguments to control the reconstruction |
-
 #### List of arguments
-The argument dictionary has the following arguments:
+kipl::morphology::MorphConnect conn = kipl::morphology::conn8
 
-| Argument | Description | Data type |
-|-|-|-|
-|center| The position of the acquisition axis (center of rotation)| float |
-|tiltangle| Correction angle to adjust tilted acquisition axis (deg)| float |
-|tiltpivot| Vertical offset of the rotation point to adjust tilted acquisition axis (deg)| float |
-|usetilt  | Switch to use the tilt correction | bool |
-|roi | Region of interest in projection space (this parameter is probably not used)| int, list[4] |
-|direction | Direction of the acquisition | enum |
-|resolution | Pixel size in of the projections | float |
-|usematrixroi | Switch to activate cropped reconstruction | bool |
-|matrixroi | Region of interest to crop the reconstructed slice | int, list[4]|
-|rotate | Rotation angle of the reconstructed object| float |
 
-### ```process(projections, dict args)```
-Starts the reconstruction of a set of projections
+### ```setCleanMethod(detectionMethod,cleanMethod)```
+
+### ```cleanMethod()```
+Returns the current clean method.
+
+### ```detectionMethod```
+Returns the current detection method.
+
+### ```setLimits(applyClamp,vmin,vmax,maxarea)```
+Set limit on the image values and sizes of blobs
+
+### ```clampLimits()```
+Returns a vector containing the data clamping lower and upper limits.
+
+### ```clampActive()```
+Returns true if data clamping is active.")
+
+### ```maxArea()```
+Returns the max area of detected spots to be accepted for cleaning.
+
+### ```cleanInfNan()```
+Makes a check and replaces possible Inf and Nan values in the image before cleaning.
+
+### ```setEdgeConditioning()```
+Sets the length of the median filter used to precondition the image boundaries.
 
 #### Interface
-The process method takes these arguments:
+|length| Length of the edge smoothing filter|
 
-|Input argument | Description |
-|-|-|
-|projections| a numpy array with the dimensions nProj x size V x size U.|
-|args | A dictionary with arguments to control the reconstruction |
+### ```edgeConditionLength()```
+Returns the lenght of the edge conditioning filter.
 
-#### List of arguments
+### ```detectionImage(x,remove_bias)```
 
-|Argument | Description | Data type|
-|-|-|-|
-|angles| A list with acquisition angles in degrees. The number of angles must match the number of projections| float[nProj] |
-|weights| A list of weights for the projections. The basic weight is 1/nProj, but you can also provide golden ratio weighting | float[nProj] |
+#### Interface
+|x|| 
+|remove_bias||
+
+### ```process(data,th,sigma)```
+
+#### Interface
+py::arg("data"),
+py::arg("th"),
+py::arg("sigma"));
+
+
+### ```process(img,th,sigma)```
+Cleans spots from the image in place using th as threshold and sigma as mixing width.
+
+#### Interface
+py::arg("data"),
+py::arg("th"),
+py::arg("sigma"));
+
+### ```process(img,th,sigma)```
+                 
+#### Interface                
+py::array_t<double> &x,
+double th,
+double sigma)
+    {
+        py::buffer_info buf1 = x.request();
+
+        if (buf1.ndim == 2)
+        {
+            std::vector<size_t> dims = {    static_cast<size_t>(buf1.shape[1]),
+                                            static_cast<size_t>(buf1.shape[0])};
+            double *data=static_cast<double*>(buf1.ptr);
+
+            kipl::base::TImage<float,2> img(dims);
+
+            std::copy_n(data,img.Size(),img.GetDataPtr());
+
+            msc.process(img,th,sigma);
+            std::copy_n(img.GetDataPtr(),img.Size(),data);
+        }
+        else if (buf1.ndim==3)
+        {
+            std::vector<size_t> dims = {    static_cast<size_t>(buf1.shape[2]),
+                                            static_cast<size_t>(buf1.shape[1]),
+                                            static_cast<size_t>(buf1.shape[0])};
+
+            double *data=static_cast<double*>(buf1.ptr);
+
+            kipl::base::TImage<float,3> img(dims);
+
+            std::copy_n(data,img.Size(),img.GetDataPtr());
+
+            msc.process(img,th,sigma);
+            std::copy_n(img.GetDataPtr(),img.Size(),data);
+        }
+        else
+            throw ImagingException("Morphspot clean only supports 2- and 3-D data",__FILE__,__LINE__);
+
+    },
+
+                "Cleans spots from the image in place using th as threshold and sigma as mixing width.",
+                py::arg("data"),
+                py::arg("th"),
+                py::arg("sigma"));
+
+
+    mscClass.def("process",
+                 [](ImagingAlgorithms::MorphSpotClean &msc,
+                 py::array_t<double> &x,
+                 std::vector<float> &th,
+                 std::vector<float> &sigma)
+    {
+        py::buffer_info buf1 = x.request();
+
+        std::vector<size_t> dims = {    static_cast<size_t>(buf1.shape[1]),
+                                        static_cast<size_t>(buf1.shape[0])};
+
+        double *data=static_cast<double*>(buf1.ptr);
+
+        kipl::base::TImage<float,2> img(dims);
+
+        std::copy_n(data,img.Size(),img.GetDataPtr());
+
+        msc.process(img,th,sigma);
+        std::copy_n(img.GetDataPtr(),img.Size(),data);
+    },
+
+                "Cleans spots from the image in place using th as threshold and sigma as mixing width.",
+                py::arg("data"),
+                py::arg("th"),
+                py::arg("sigma"));
