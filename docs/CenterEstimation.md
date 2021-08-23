@@ -2,6 +2,18 @@
 
 ## Description
 
+## Example
+```python
+import imgalg
+# cproj is a 3D image containing all projections of the scan
+img0   = cproj[0,:,:]
+img180 = cproj[312,:,:] # This is the projection at the opposite side of the 0. Which projection you select depends on the length of the scan.  
+
+ce = imgalg.TomoCenter()
+
+cest = ce.estimate(img0,img180,imgalg.centerLeastSquare,True)
+```
+
 ## Enums
 |Enum value| Description|
 |-|-|
