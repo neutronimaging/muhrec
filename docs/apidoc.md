@@ -5,3 +5,4 @@
 
 ## Module ImagingAlgorithms
 - [MorphSpotClean](MorphSpotClean)
+- [TomoCenter](CenterEstimation.md)
