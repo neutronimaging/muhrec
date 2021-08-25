@@ -33,12 +33,14 @@ The constructor doesn't have any arguments.
 
 ### ```setFraction(fraction)```
 Set the mid quantile fraction of center estimates to use for the linear fit of the center line.
+
 |Argument| Description|
 |-|-|
 |float fraction|The fraction value, should be in the interval 0-1. The default is 0.9|
 
 ### ```estimate(img0deg,img180deg,esttype,bTilt)```
 #### Interface
+
 |Arguments| Description|
 |-|-|
 |2D Array x0| Image at 0 degrees|
@@ -66,6 +68,7 @@ A tuple with k and m
 Returns the center at vertical position y
 
 #### Interface
+
 | Arguments| Description |
 |-|-|
 | int y | The vertical position to the get the center|
