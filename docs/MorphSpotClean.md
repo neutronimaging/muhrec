@@ -36,6 +36,7 @@ MorphSpotClean constructor doesn't take any arguments.
 ### ```setConnectivity(conn)```
 Sets the mophological connectivity for thhe operations. Default value is 8-connectivity.
 #### Interface
+
 |Argument| Description|
 |-|-|
 |conn| Sets the mophological connectivity (kipl::morphology::conn8)|
@@ -68,6 +69,7 @@ Makes a check and replaces possible Inf and Nan values in the image before clean
 Sets the length of the median filter used to precondition the image boundaries.
 
 #### Interface
+
 |Argument| Description|
 |-|-|
 |length| Length of the edge smoothing filter|
@@ -78,15 +80,18 @@ Returns the lenght of the edge conditioning filter.
 ### ```detectionImage(x,remove_bias)```
 
 #### Interface
+
 |Argument| Description|
 |-|-|
 |x|input image (2D only)| 
 |remove_bias| Switch to tell if the returned image is the full image with filled outliers of if the trend is subtracted|
 
+
 ### ```process(img,th,sigma)```
 Cleans spots from the image in place using th as threshold and sigma as mixing width. The function shuld be able to take either double or single precision images and parameters
 
 #### Interface
+
 |Argument| Description|
 |-|-|
 |img| An 2D or 3D image. If a 3D image is provided, slices will be processed along axis=0|
